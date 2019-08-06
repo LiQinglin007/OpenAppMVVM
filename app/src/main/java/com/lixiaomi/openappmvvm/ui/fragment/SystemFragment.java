@@ -1,7 +1,10 @@
 package com.lixiaomi.openappmvvm.ui.fragment;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,15 +12,15 @@ import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.lixiaomi.baselib.utils.T;
 import com.lixiaomi.mvvmbaselib.base.BaseFragment;
 import com.lixiaomi.openappmvvm.R;
 import com.lixiaomi.openappmvvm.adapter.SystemFragmentAdapter;
 import com.lixiaomi.openappmvvm.bean.MyTreeBean;
 import com.lixiaomi.openappmvvm.databinding.FragmentSystemBinding;
-import com.lixiaomi.openappmvvm.mv.SystemFragmentViewModel;
+import com.lixiaomi.openappmvvm.mv.SystemFragmentViewModelImpl;
 import com.lixiaomi.openappmvvm.ui.activity.SystemListActivity;
 import com.lixiaomi.openappmvvm.utils.FinalData;
-
 
 import java.util.ArrayList;
 
@@ -28,7 +31,7 @@ import java.util.ArrayList;
  * @remarks：<br>
  * @changeTime:<br>
  */
-public class SystemFragment extends BaseFragment<SystemFragmentLifecycle, FragmentSystemBinding, SystemFragmentViewModel> {
+public class SystemFragment extends BaseFragment<SystemFragmentLifecycle, FragmentSystemBinding, SystemFragmentViewModelImpl> {
 
 
     private android.support.v7.widget.RecyclerView mSystemRecy;
@@ -60,7 +63,6 @@ public class SystemFragment extends BaseFragment<SystemFragmentLifecycle, Fragme
 
     @Override
     protected void initView(View rootView, Bundle savedInstanceState) {
-
         mTopLeftLy = rootView.findViewById(R.id.top_back_ly);
         mTopRightLy = rootView.findViewById(R.id.top_right_ly);
         mTopTitleTv = rootView.findViewById(R.id.top_title_tv);
@@ -86,11 +88,34 @@ public class SystemFragment extends BaseFragment<SystemFragmentLifecycle, Fragme
                 }
             }
         });
+
+        mViewModel.getTreeTypeList();
     }
 
     @Override
     protected void startListenerData() {
+        mViewModel.getmShowLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                setLoading(aBoolean);
+            }
+        });
 
+        mViewModel.getmToastMessage().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                T.shortToast(getActivity(), s);
+            }
+        });
+
+        mViewModel.getmTreeData().observe(this, new Observer<ArrayList<MyTreeBean>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<MyTreeBean> myTreeBeans) {
+                mListData.clear();
+                mListData.addAll(myTreeBeans);
+                mSystemFragmentAdapter.replaceData(mListData);
+            }
+        });
     }
 
     @Override
@@ -99,16 +124,7 @@ public class SystemFragment extends BaseFragment<SystemFragmentLifecycle, Fragme
     }
 
     @Override
-    protected SystemFragmentViewModel creatViewModel() {
-        return new SystemFragmentViewModel();
+    protected SystemFragmentViewModelImpl creatViewModel() {
+        return ViewModelProviders.of(SystemFragment.getInstance()).get(SystemFragmentViewModelImpl.class);
     }
-//
-//
-//    @Override
-//    public void setTreeData(ArrayList<MyTreeBean> treeList, int code, String msg) {
-//        mListData.clear();
-//        mListData.addAll(treeList);
-//        mSystemFragmentAdapter.replaceData(mListData);
-//    }
-
 }

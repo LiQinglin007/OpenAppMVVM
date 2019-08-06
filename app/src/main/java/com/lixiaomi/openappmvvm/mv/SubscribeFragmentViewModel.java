@@ -1,11 +1,5 @@
 package com.lixiaomi.openappmvvm.mv;
 
-import com.lixiaomi.mvvmbaselib.base.BaseModel;
-import com.lixiaomi.mvvmbaselib.base.BaseViewModel;
-import com.lixiaomi.openappmvvm.ui.fragment.SubscribeFragmentLifecycle;
-
-import java.util.ArrayList;
-
 /**
  * @describe：<br>
  * @author：Xiaomi<br>
@@ -13,10 +7,17 @@ import java.util.ArrayList;
  * @remarks：<br>
  * @changeTime:<br>
  */
-public class SubscribeFragmentViewModel extends BaseViewModel<BaseModel, SubscribeFragmentLifecycle> {
+public interface SubscribeFragmentViewModel {
+    /**
+     * 获取公众号列表
+     */
+    void getWXAuthorList();
 
-    @Override
-    protected ArrayList<BaseModel> createModelList() {
-        return null;
-    }
+    /**
+     * 获取公众号下的文章列表
+     *
+     * @param authorId 公众号id
+     * @param page     页码
+     */
+    void getWXArticleList(boolean showLoading, String authorId, int page);
 }

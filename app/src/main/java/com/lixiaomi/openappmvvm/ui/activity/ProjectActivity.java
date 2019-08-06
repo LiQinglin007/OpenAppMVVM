@@ -1,8 +1,11 @@
 package com.lixiaomi.openappmvvm.ui.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -10,12 +13,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.lixiaomi.baselib.utils.T;
 import com.lixiaomi.mvvmbaselib.base.BaseActivity;
-import com.lixiaomi.mvvmbaselib.base.BaseLifeCycle;
-import com.lixiaomi.mvvmbaselib.base.BaseViewModel;
 import com.lixiaomi.openappmvvm.R;
 import com.lixiaomi.openappmvvm.adapter.ProjectAdapter;
 import com.lixiaomi.openappmvvm.bean.ProjectBean;
+import com.lixiaomi.openappmvvm.databinding.ActivityProjectListBinding;
+import com.lixiaomi.openappmvvm.mv.activity.ProjectActivityViewModelImpl;
 import com.lixiaomi.openappmvvm.utils.FinalData;
 
 
@@ -28,7 +32,7 @@ import java.util.ArrayList;
  * @remarks：<br>
  * @changeTime:<br>
  */
-public class ProjectActivity extends BaseActivity {
+public class ProjectActivity extends BaseActivity<ProjectActivityLifeCycle, ActivityProjectListBinding, ProjectActivityViewModelImpl> {
 
     private LinearLayoutCompat mTopLeftLy;
     private LinearLayoutCompat mTopRightLy;
@@ -36,16 +40,12 @@ public class ProjectActivity extends BaseActivity {
 
     private ProjectAdapter mAdapter;
     private ArrayList<ProjectBean.DataBean.DatasBean> mDataList = new ArrayList();
-    private int mPage = 1;
+    private int mPage = 0;
     private boolean mLoadMoreIng = false;
     private boolean mRefreshIng = false;
     private SwipeRefreshLayout mProjectRefresh;
     private android.support.v7.widget.RecyclerView mProjectRecy;
 
-    @Override
-    protected BaseViewModel creatViewModel() {
-        return null;
-    }
 
     @Override
     protected void initData() {
@@ -74,7 +74,7 @@ public class ProjectActivity extends BaseActivity {
         mProjectRefresh = findViewById(R.id.project_refresh);
         mProjectRecy = findViewById(R.id.project_recy);
         mProjectRecy.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new ProjectAdapter(R.layout.item_project);
+        mAdapter = new ProjectAdapter(R.layout.item_project, mDataList);
         mAdapter.setNewData(mDataList);
         mProjectRecy.setAdapter(mAdapter);
 
@@ -95,7 +95,7 @@ public class ProjectActivity extends BaseActivity {
             public void onRefresh() {
                 if (!mLoadMoreIng && !mRefreshIng) {
                     mRefreshIng = true;
-                    mPage = 1;
+                    mPage = 0;
                     //下拉刷新的时候不让上拉加载
                     mAdapter.setEnableLoadMore(false);
                     getData(false);
@@ -128,40 +128,62 @@ public class ProjectActivity extends BaseActivity {
         getData(true);
     }
 
-    @Override
-    protected BaseLifeCycle createLifeCycle() {
-        return null;
-    }
 
     @Override
     protected void startListenerData() {
+        mViewModel.getmShowLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                setLoading(aBoolean);
+            }
+        });
 
+        mViewModel.getmToastMessage().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                T.shortToast(ProjectActivity.this, s);
+            }
+        });
+
+        mViewModel.getmProjectListData().observe(this, new Observer<ProjectBean.DataBean>() {
+            @Override
+            public void onChanged(@Nullable ProjectBean.DataBean dataBean) {
+                if (mPage == 0) {
+                    mDataList.clear();
+                }
+                mDataList.addAll(dataBean.getDatas());
+                mAdapter.replaceData(mDataList);
+                mProjectRefresh.setEnabled(true);
+                mProjectRefresh.setRefreshing(false);
+                mAdapter.setEnableLoadMore(true);
+                mLoadMoreIng = false;
+                mRefreshIng = false;
+                if (mPage >= dataBean.getPageCount()) {
+                    mAdapter.loadMoreEnd();
+                } else {
+                    mAdapter.loadMoreComplete();
+                }
+            }
+        });
     }
 
 
     private void getData(boolean showLoading) {
-
+        mViewModel.getProjectData(showLoading, mPage);
     }
 
-//    @Override
-//    public void setArticleProject(int pageCount, ArrayList<ProjectBean.DataBean.DatasBean> projectList, int code, String msg) {
-//        if (mPage == 1) {
-//            mDataList.clear();
-//        }
-//        mDataList.addAll(projectList);
-//        mAdapter.replaceData(mDataList);
-//        mProjectRefresh.setEnabled(true);
-//        mProjectRefresh.setRefreshing(false);
-//        mAdapter.setEnableLoadMore(true);
-//        mLoadMoreIng = false;
-//        mRefreshIng = false;
-//        if (mPage >= pageCount) {
-//            mAdapter.loadMoreEnd();
-//        } else {
-//            mAdapter.loadMoreComplete();
-//        }
-//    }
-//
+    @Override
+    protected ProjectActivityLifeCycle createLifeCycle() {
+        return new ProjectActivityLifeCycle(this);
+    }
+
+
+    @Override
+    protected ProjectActivityViewModelImpl creatViewModel() {
+        return ViewModelProviders.of(this).get(ProjectActivityViewModelImpl.class);
+    }
+
+
     @Override
     protected int setStatusBarColor() {
         return R.color.default_color;

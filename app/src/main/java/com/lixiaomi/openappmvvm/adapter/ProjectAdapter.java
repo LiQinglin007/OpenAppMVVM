@@ -1,5 +1,6 @@
 package com.lixiaomi.openappmvvm.adapter;
 
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -7,6 +8,8 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.lixiaomi.baselib.utils.loadImageUtils.MiLoadImageUtil;
 import com.lixiaomi.openappmvvm.R;
 import com.lixiaomi.openappmvvm.bean.ProjectBean;
+
+import java.util.List;
 
 
 /**
@@ -18,8 +21,8 @@ import com.lixiaomi.openappmvvm.bean.ProjectBean;
  */
 public class ProjectAdapter extends BaseQuickAdapter<ProjectBean.DataBean.DatasBean, BaseViewHolder> {
 
-    public ProjectAdapter(int layoutResId) {
-        super(layoutResId);
+    public ProjectAdapter(int layoutResId, @Nullable List<ProjectBean.DataBean.DatasBean> data) {
+        super(layoutResId, data);
     }
 
     @Override

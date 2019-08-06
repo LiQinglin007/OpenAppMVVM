@@ -1,8 +1,11 @@
 package com.lixiaomi.openappmvvm.ui.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -10,12 +13,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.lixiaomi.baselib.utils.T;
 import com.lixiaomi.mvvmbaselib.base.BaseActivity;
-import com.lixiaomi.mvvmbaselib.base.BaseLifeCycle;
-import com.lixiaomi.mvvmbaselib.base.BaseViewModel;
 import com.lixiaomi.openappmvvm.R;
 import com.lixiaomi.openappmvvm.adapter.SystemActivityAdapter;
 import com.lixiaomi.openappmvvm.bean.TreeArticleListBean;
+import com.lixiaomi.openappmvvm.databinding.ActivitySystemListBinding;
+import com.lixiaomi.openappmvvm.mv.activity.SystemListActivityViewModelImpl;
 import com.lixiaomi.openappmvvm.utils.FinalData;
 
 
@@ -28,7 +32,7 @@ import java.util.ArrayList;
  * @remarks：<br>
  * @changeTime:<br>
  */
-public class SystemListActivity extends BaseActivity {
+public class SystemListActivity extends BaseActivity<SystemListActivityLifecycle, ActivitySystemListBinding, SystemListActivityViewModelImpl> {
 
     private LinearLayoutCompat mTopLeftLy;
     private LinearLayoutCompat mTopRightLy;
@@ -40,7 +44,7 @@ public class SystemListActivity extends BaseActivity {
     private SwipeRefreshLayout mRefreshLy;
     private SystemActivityAdapter mAdapter;
     private ArrayList<TreeArticleListBean.DataBean.DatasBean> mDataList = new ArrayList();
-    private int mPage = 1;
+    private int mPage = 0;
     private boolean mLoadMoreIng = false;
     private boolean mRefreshIng = false;
 
@@ -49,17 +53,12 @@ public class SystemListActivity extends BaseActivity {
         return R.layout.activity_system_list;
     }
 
-    @Override
-    protected BaseViewModel creatViewModel() {
-        return null;
-    }
 
     @Override
     protected void initData() {
         mCId = getIntent().getIntExtra(FinalData.SYSTEM_TYPE_ID, -1);
         mTitle = getIntent().getStringExtra(FinalData.SYSTEM_TYPE_TITLE);
     }
-
 
 
     @Override
@@ -111,7 +110,7 @@ public class SystemListActivity extends BaseActivity {
             public void onRefresh() {
                 if (!mLoadMoreIng && !mRefreshIng) {
                     mRefreshIng = true;
-                    mPage = 1;
+                    mPage = 0;
                     //下拉刷新的时候不让上拉加载
                     mAdapter.setEnableLoadMore(false);
                     getData(false);
@@ -136,40 +135,61 @@ public class SystemListActivity extends BaseActivity {
 
     }
 
-    @Override
-    protected BaseLifeCycle createLifeCycle() {
-        return null;
-    }
 
     @Override
     protected void startListenerData() {
+        mViewModel.getmShowLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                setLoading(aBoolean);
+            }
+        });
 
+        mViewModel.getmToastMessage().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                T.shortToast(SystemListActivity.this, s);
+            }
+        });
+
+        mViewModel.getmTreeArticleListData().observe(this, new Observer<TreeArticleListBean.DataBean>() {
+            @Override
+            public void onChanged(@Nullable TreeArticleListBean.DataBean dataBean) {
+                if (mPage == 0) {
+                    mDataList.clear();
+                }
+                mDataList.addAll(dataBean.getDatas());
+                mAdapter.replaceData(mDataList);
+                mRefreshLy.setEnabled(true);
+                mRefreshLy.setRefreshing(false);
+                mAdapter.setEnableLoadMore(true);
+                mLoadMoreIng = false;
+                mRefreshIng = false;
+                if (mPage >= dataBean.getPageCount()) {
+                    mAdapter.loadMoreEnd();
+                } else {
+                    mAdapter.loadMoreComplete();
+                }
+            }
+        });
     }
 
     private void getData(boolean showLoading) {
         if (mCId != -1) {
-//            mPersenter.getSystemArticle(showLoading, mPage, mCId + "");
+            mViewModel.getSystemArticle(showLoading, mPage, mCId + "");
         }
     }
 
-//    @Override
-//    public void setSystemArticleList(int page, ArrayList<TreeArticleListBean.DataBean.DatasBean> list, int code, String msg) {
-//        if (mPage == 1) {
-//            mDataList.clear();
-//        }
-//        mDataList.addAll(list);
-//        mAdapter.replaceData(mDataList);
-//        mRefreshLy.setEnabled(true);
-//        mRefreshLy.setRefreshing(false);
-//        mAdapter.setEnableLoadMore(true);
-//        mLoadMoreIng = false;
-//        mRefreshIng = false;
-//        if (mPage >= page) {
-//            mAdapter.loadMoreEnd();
-//        } else {
-//            mAdapter.loadMoreComplete();
-//        }
-//    }
+
+    @Override
+    protected SystemListActivityViewModelImpl creatViewModel() {
+        return ViewModelProviders.of(this).get(SystemListActivityViewModelImpl.class);
+    }
+
+    @Override
+    protected SystemListActivityLifecycle createLifeCycle() {
+        return new SystemListActivityLifecycle(this);
+    }
 
     @Override
     protected int setStatusBarColor() {

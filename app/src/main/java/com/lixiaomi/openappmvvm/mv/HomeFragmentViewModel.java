@@ -1,11 +1,5 @@
 package com.lixiaomi.openappmvvm.mv;
 
-import com.lixiaomi.mvvmbaselib.base.BaseModel;
-import com.lixiaomi.mvvmbaselib.base.BaseViewModel;
-import com.lixiaomi.openappmvvm.ui.fragment.HomeFragmentLifecycle;
-
-import java.util.ArrayList;
-
 /**
  * @describe：<br>
  * @author：Xiaomi<br>
@@ -13,10 +7,10 @@ import java.util.ArrayList;
  * @remarks：<br>
  * @changeTime:<br>
  */
-public class HomeFragmentViewModel extends BaseViewModel<BaseModel, HomeFragmentLifecycle> {
+public interface HomeFragmentViewModel {
+    void getBannerData();
 
-    @Override
-    protected ArrayList<BaseModel> createModelList() {
-        return null;
-    }
+    void getArticleData();
+
+    void getProjetData();
 }

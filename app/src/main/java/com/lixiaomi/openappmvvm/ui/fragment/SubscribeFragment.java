@@ -1,25 +1,26 @@
 package com.lixiaomi.openappmvvm.ui.fragment;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.lixiaomi.baselib.ui.dialog.dialoglist.MiDialogList;
+import com.lixiaomi.baselib.utils.T;
 import com.lixiaomi.mvvmbaselib.base.BaseFragment;
-import com.lixiaomi.mvvmbaselib.base.BaseLifeCycle;
-import com.lixiaomi.mvvmbaselib.base.BaseViewModel;
 import com.lixiaomi.openappmvvm.R;
 import com.lixiaomi.openappmvvm.adapter.SubscribeFragmentAdapter;
 import com.lixiaomi.openappmvvm.bean.WXArticleAuthorlistBean;
 import com.lixiaomi.openappmvvm.bean.WXArticleListBean;
-import com.lixiaomi.openappmvvm.databinding.FragmentHomeBinding;
 import com.lixiaomi.openappmvvm.databinding.FragmentSubscribeBinding;
-import com.lixiaomi.openappmvvm.mv.HomeFragmentViewModel;
-import com.lixiaomi.openappmvvm.mv.SubscribeFragmentViewModel;
+import com.lixiaomi.openappmvvm.mv.SubscribeFragmentViewModelImpl;
 import com.lixiaomi.openappmvvm.ui.activity.WebViewActivity;
 import com.lixiaomi.openappmvvm.utils.FinalData;
 
@@ -33,7 +34,7 @@ import java.util.ArrayList;
  * @remarks：<br>
  * @changeTime:<br>
  */
-public class SubscribeFragment extends BaseFragment<SubscribeFragmentLifecycle, FragmentSubscribeBinding, SubscribeFragmentViewModel> {
+public class SubscribeFragment extends BaseFragment<SubscribeFragmentLifecycle, FragmentSubscribeBinding, SubscribeFragmentViewModelImpl> {
 
     private SwipeRefreshLayout mRefresh;
     private android.widget.TextView mSubAuthorTv;
@@ -56,7 +57,7 @@ public class SubscribeFragment extends BaseFragment<SubscribeFragmentLifecycle, 
     /**
      * 现在加载到了多少页
      */
-    private int mPage = 1;
+    private int mPage = 0;
     private boolean mRefreshIng = false;
     private boolean mLoadMoreIng = false;
 
@@ -81,11 +82,9 @@ public class SubscribeFragment extends BaseFragment<SubscribeFragmentLifecycle, 
 
     @Override
     protected void initView(View rootView, Bundle savedInstanceState) {
-
         mRefresh = rootView.findViewById(R.id.sub_sr);
         mSubAuthorTv = rootView.findViewById(R.id.sub_author_tv);
         mSubRecy = rootView.findViewById(R.id.sub_recy);
-//        mPersenter.getWXAuthorList();
 
         mSubRecy.setLayoutManager(new LinearLayoutManager(getActivity()));
         mSubscribeFragmentAdapter = new SubscribeFragmentAdapter(R.layout.item_wx_article, mArticleListData);
@@ -113,7 +112,7 @@ public class SubscribeFragment extends BaseFragment<SubscribeFragmentLifecycle, 
                             @Override
                             public void onListCallback(ArrayList<Integer> dataList) {
                                 mChooseIndex = dataList.get(0);
-                                mPage = 1;
+                                mPage = 0;
                                 mSubAuthorTv.setText(mAuthorListData.get(mChooseIndex).getName());
                                 getData(true);
                             }
@@ -153,7 +152,7 @@ public class SubscribeFragment extends BaseFragment<SubscribeFragmentLifecycle, 
             @Override
             public void onRefresh() {
                 if (!mLoadMoreIng || !mRefreshIng) {
-                    mPage = 1;
+                    mPage = 0;
                     mRefreshIng = true;
                     mSubscribeFragmentAdapter.setEnableLoadMore(false);
                     getData(false);
@@ -161,11 +160,62 @@ public class SubscribeFragment extends BaseFragment<SubscribeFragmentLifecycle, 
             }
         });
 
+        mViewModel.getWXAuthorList();
+    }
+
+    private void getData(boolean showLoading) {
+        mViewModel.getWXArticleList(showLoading, mAuthorListData.get(mChooseIndex).getId() + "", mPage);
     }
 
     @Override
     protected void startListenerData() {
+        mViewModel.getmShowLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                setLoading(aBoolean);
+            }
+        });
 
+        mViewModel.getmToastMessage().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                T.shortToast(getActivity(), s);
+            }
+        });
+
+        mViewModel.getmAuthorData().observe(this, new Observer<ArrayList<WXArticleAuthorlistBean.DataBean>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<WXArticleAuthorlistBean.DataBean> dataBeans) {
+                mAuthorListData.clear();
+                mAuthorListData.addAll(dataBeans);
+                if (mAuthorListData.size() > 0) {
+                    mSubAuthorTv.setText(mAuthorListData.get(mChooseIndex).getName());
+                    getData(true);
+                }
+            }
+        });
+
+        mViewModel.getmArticleData().observe(this, new Observer<WXArticleListBean.DataBean>() {
+            @Override
+            public void onChanged(@Nullable WXArticleListBean.DataBean dataBean) {
+                if (mPage == 0) {
+                    mArticleListData.clear();
+                }
+                mArticleListData.addAll(dataBean.getDatas());
+                mSubscribeFragmentAdapter.replaceData(mArticleListData);
+                if (mPage >= dataBean.getPageCount()) {
+                    mSubscribeFragmentAdapter.loadMoreEnd();
+                } else {
+                    mSubscribeFragmentAdapter.loadMoreComplete();
+                }
+
+                mRefresh.setEnabled(true);
+                mRefresh.setRefreshing(false);
+                mSubscribeFragmentAdapter.setEnableLoadMore(true);
+                mRefreshIng = false;
+                mLoadMoreIng = false;
+            }
+        });
     }
 
     @Override
@@ -174,44 +224,9 @@ public class SubscribeFragment extends BaseFragment<SubscribeFragmentLifecycle, 
     }
 
     @Override
-    protected SubscribeFragmentViewModel creatViewModel() {
-        return new SubscribeFragmentViewModel();
+    protected SubscribeFragmentViewModelImpl creatViewModel() {
+        return ViewModelProviders.of(SubscribeFragment.getInstance()).get(SubscribeFragmentViewModelImpl.class);
     }
 
-    //
-//
-    private void getData(boolean showLoading) {
-//        mPersenter.getWXArticleList(showLoading, mAuthorListData.get(mChooseIndex).getId() + "", mPage);
-    }
-//
-//    @Override
-//    public void setAuthorListData(ArrayList<WXArticleAuthorlistBean.DataBean> authorListData, int code, String msg) {
-//        mAuthorListData.clear();
-//        mAuthorListData.addAll(authorListData);
-//        if (mAuthorListData.size() > 0) {
-//            mSubAuthorTv.setText(mAuthorListData.get(mChooseIndex).getName());
-//            getData(true);
-//        }
-//    }
-//
-//    @Override
-//    public void setArticleListData(int pageCount, ArrayList<WXArticleListBean.DataBean.DatasBean> articleListData, int code, String msg) {
-//        if (mPage == 1) {
-//            mArticleListData.clear();
-//        }
-//        mArticleListData.addAll(articleListData);
-//        mSubscribeFragmentAdapter.replaceData(mArticleListData);
-//        if (mPage >= pageCount) {
-//            mSubscribeFragmentAdapter.loadMoreEnd();
-//        } else {
-//            mSubscribeFragmentAdapter.loadMoreComplete();
-//        }
-//
-//        mRefresh.setEnabled(true);
-//        mRefresh.setRefreshing(false);
-//        mSubscribeFragmentAdapter.setEnableLoadMore(true);
-//        mRefreshIng = false;
-//        mLoadMoreIng = false;
-//    }
 
 }
