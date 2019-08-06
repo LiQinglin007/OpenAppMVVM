@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/window_background"
+        android:orientation="vertical">
+
+        <include layout="@layout/include_top"></include>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/px_10"
+                android:background="@color/color_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/mine_choosetime"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/px_80"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/px_24"
+                    android:paddingRight="@dimen/px_24"
+                    android:text="选择时间"
+                    android:textColor="@color/color_333" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/mine_choosetime_sw"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/px_30"
+                    android:layout_marginRight="@dimen/px_24"
+                    android:gravity="center_vertical"
+                    android:text="今天以后？" />
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <include layout="@layout/include_line"></include>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/mine_choose_time_min"
+                style="@style/fragment_mine_tv"
+                android:text="选择时间(几点几分)" />
+
+            <include layout="@layout/include_line"></include>
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/mine_choose_time_didi"
+                style="@style/fragment_mine_tv"
+                android:text="预约时间(仿滴滴预约)" />
+
+            <include layout="@layout/include_line"></include>
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/mine_choosesex"
+                style="@style/fragment_mine_tv"
+                android:text="选择性别" />
+
+            <include layout="@layout/include_line"></include>
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/mine_bottom_list"
+                style="@style/fragment_mine_tv"
+                android:text="中间弹出list多选(选择notice)" />
+
+            <include layout="@layout/include_line"></include>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/mine_bottom_userlist"
+                style="@style/fragment_mine_tv"
+                android:text="底部弹出list单选(选择user)" />
+
+            <include layout="@layout/include_line"></include>
+
+
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/color_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/mine_sing_out"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/px_80"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/px_24"
+                    android:paddingRight="@dimen/px_24"
+                    android:text="弹框"
+                    android:textColor="@color/color_333" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/mine_sing_out_sw"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/px_30"
+                    android:layout_marginRight="@dimen/px_24"
+                    android:gravity="center_vertical"
+                    android:text="Text？" />
+
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <include layout="@layout/include_line"></include>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/mine_download"
+                style="@style/fragment_mine_tv"
+                android:text="下载文件" />
+
+            <include layout="@layout/include_line"></include>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/mine_switch_fragment"
+                style="@style/fragment_mine_tv"
+                android:text="切换fragment" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</layout>

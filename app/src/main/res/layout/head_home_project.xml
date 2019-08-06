@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_100"
+    android:background="@color/window_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <View
+        android:layout_width="@dimen/px_10"
+        android:layout_height="@dimen/px_50"
+        android:layout_marginLeft="@dimen/px_20"
+        android:background="@color/warning_color1"></View>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/px_20"
+        android:gravity="center_vertical"
+        android:text="最新项目"
+        android:textColor="@color/warning_color1"
+        android:textSize="@dimen/px_30" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/px_20"
+        android:gravity="center_vertical|right"
+        android:text="更多 >"
+        android:textSize="@dimen/px_25" />
+
+</LinearLayout>

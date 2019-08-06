@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/window_background"
+    android:orientation="vertical">
+
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/px_300"
+        android:background="@color/default_color"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/mine_take_pic"
+            android:layout_width="@dimen/px_150"
+            android:layout_height="@dimen/px_150" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/px_20"
+            android:text="我是李小米"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/px_30" />
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/mine_utils"
+        style="@style/fragment_mine_tv"
+        android:layout_marginTop="@dimen/px_10"
+        android:text="常用工具类" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/mine_switch_fragment"
+        style="@style/fragment_mine_tv"
+        android:layout_marginTop="@dimen/px_2"
+        android:text="切换fragment" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/mine_blog"
+        style="@style/fragment_mine_tv"
+        android:layout_marginTop="@dimen/px_2"
+        android:text="我的博客" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/mine_book"
+        style="@style/fragment_mine_tv"
+        android:layout_marginTop="@dimen/px_2"
+        android:text="我的简书" />
+
+</LinearLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px_80"
+    android:background="@color/window_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/item_tree_lv1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/px_45"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:textColor="@color/color_666"
+        android:textSize="@dimen/px_25"
+        tools:text="· 二级分类标题" />
+
+</LinearLayout>
