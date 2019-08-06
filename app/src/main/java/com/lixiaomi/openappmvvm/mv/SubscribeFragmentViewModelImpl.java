@@ -91,6 +91,7 @@ public class SubscribeFragmentViewModelImpl extends BaseViewModel<BaseModel, Sub
                 if (mArticleBean.getDatas() == null) {
                     mArticleBean.setDatas(new ArrayList<WXArticleListBean.DataBean.DatasBean>());
                     mArticleBean.setPageCount(0);
+                    mArticleBean.setCurPage(0);
                 }
                 if (mArticleBean.getDatas().size() != 0) {
                     mArticleBean.getDatas().clear();
@@ -102,6 +103,7 @@ public class SubscribeFragmentViewModelImpl extends BaseViewModel<BaseModel, Sub
                         if (data != null && data.size() != 0) {
                             mArticleBean.getDatas().addAll(data);
                             mArticleBean.setPageCount(articleListBean.getData().getPageCount());
+                            mArticleBean.setCurPage(articleListBean.getData().getCurPage());
                             mArticleData.setValue(mArticleBean);
                         }
                     }

@@ -203,7 +203,7 @@ public class SubscribeFragment extends BaseFragment<SubscribeFragmentLifecycle, 
                 }
                 mArticleListData.addAll(dataBean.getDatas());
                 mSubscribeFragmentAdapter.replaceData(mArticleListData);
-                if (mPage >= dataBean.getPageCount()) {
+                if (dataBean.getCurPage() >= dataBean.getPageCount()) {
                     mSubscribeFragmentAdapter.loadMoreEnd();
                 } else {
                     mSubscribeFragmentAdapter.loadMoreComplete();

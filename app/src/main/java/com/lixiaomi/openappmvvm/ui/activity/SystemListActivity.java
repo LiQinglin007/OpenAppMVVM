@@ -165,7 +165,7 @@ public class SystemListActivity extends BaseActivity<SystemListActivityLifecycle
                 mAdapter.setEnableLoadMore(true);
                 mLoadMoreIng = false;
                 mRefreshIng = false;
-                if (mPage >= dataBean.getPageCount()) {
+                if (dataBean.getCurPage() >= dataBean.getPageCount()) {
                     mAdapter.loadMoreEnd();
                 } else {
                     mAdapter.loadMoreComplete();

@@ -48,6 +48,7 @@ public class ArticleActivityViewModelImpl extends BaseViewModel<BaseModel, Artic
                 if (mArticleBean.getDatas() == null) {
                     mArticleBean.setDatas(new ArrayList<ArticleBean.DataBean.DatasBean>());
                     mArticleBean.setPageCount(0);
+                    mArticleBean.setCurPage(0);
                 }
                 if (mArticleBean.getDatas().size() != 0) {
                     mArticleBean.getDatas().clear();
@@ -59,6 +60,7 @@ public class ArticleActivityViewModelImpl extends BaseViewModel<BaseModel, Artic
                         if (data != null && data.size() != 0) {
                             mArticleBean.getDatas().addAll(data);
                             mArticleBean.setPageCount(articleBean.getData().getPageCount());
+                            mArticleBean.setCurPage(articleBean.getData().getCurPage());
                             mArticleListData.setValue(mArticleBean);
                         }
                     }

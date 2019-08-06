@@ -47,6 +47,7 @@ public class SystemListActivityViewModelImpl extends BaseViewModel<BaseModel, Sy
                 if (mTreeArticleBean.getDatas() == null) {
                     mTreeArticleBean.setDatas(new ArrayList<TreeArticleListBean.DataBean.DatasBean>());
                     mTreeArticleBean.setPageCount(0);
+                    mTreeArticleBean.setCurPage(0);
                 }
                 if (mTreeArticleBean.getDatas().size() != 0) {
                     mTreeArticleBean.getDatas().clear();
@@ -59,6 +60,7 @@ public class SystemListActivityViewModelImpl extends BaseViewModel<BaseModel, Sy
                         if (data != null && data.size() != 0) {
                             mTreeArticleBean.getDatas().addAll(data);
                             mTreeArticleBean.setPageCount(treeBean.getData().getPageCount());
+                            mTreeArticleBean.setCurPage(treeBean.getData().getCurPage());
                             mTreeArticleListData.setValue(mTreeArticleBean);
                         }
                     }

@@ -49,6 +49,7 @@ public class ProjectActivityViewModelImpl extends BaseViewModel<BaseModel, Proje
                 if (mProjectBean.getDatas() == null) {
                     mProjectBean.setDatas(new ArrayList<ProjectBean.DataBean.DatasBean>());
                     mProjectBean.setPageCount(0);
+                    mProjectBean.setCurPage(0);
                 }
                 if (mProjectBean.getDatas().size() != 0) {
                     mProjectBean.getDatas().clear();
@@ -60,6 +61,7 @@ public class ProjectActivityViewModelImpl extends BaseViewModel<BaseModel, Proje
                         if (data != null && data.size() != 0) {
                             mProjectBean.getDatas().addAll(data);
                             mProjectBean.setPageCount(projectBean.getData().getPageCount());
+                            mProjectBean.setCurPage(projectBean.getData().getCurPage());
                             mProjectListData.setValue(mProjectBean);
                         }
                     }
