@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.lixiaomi.baselib.config.AppConfigInIt;
+import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.sdk.QbSdk;
 
@@ -35,6 +36,7 @@ public class MyApplication extends Application {
                 .withHttpRetryConnection(true)
                 .configure();
         QbSdk.initX5Environment(this, null);
-        CrashReport.initCrashReport(getApplicationContext(), "0ff1d31517", true);
+        Bugly.init(getApplicationContext(), "0ff1d31517", true);
+//        CrashReport.initCrashReport(getApplicationContext(), "0ff1d31517", true);
     }
 }
