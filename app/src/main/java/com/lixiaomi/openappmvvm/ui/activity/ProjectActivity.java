@@ -75,7 +75,6 @@ public class ProjectActivity extends BaseActivity<ProjectActivityLifeCycle, Acti
         mProjectRecy = findViewById(R.id.project_recy);
         mProjectRecy.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new ProjectAdapter(R.layout.item_project, mDataList);
-        mAdapter.setNewData(mDataList);
         mProjectRecy.setAdapter(mAdapter);
 
         mProjectRefresh.setEnabled(true);

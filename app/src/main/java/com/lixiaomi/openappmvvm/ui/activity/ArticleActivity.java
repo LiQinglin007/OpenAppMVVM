@@ -81,7 +81,6 @@ public class ArticleActivity extends BaseActivity<ArticleActivityLifeCycle, Acti
 
         mArticleRecy.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new ArticleAdapter(R.layout.item_article, mDataList);
-        mAdapter.setNewData(mDataList);
         mArticleRecy.setAdapter(mAdapter);
 
         mArticleRefresh.setEnabled(true);

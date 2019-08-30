@@ -61,8 +61,7 @@ public class SystemFragmentAdapter extends BaseMultiItemQuickAdapter<MultiItemEn
                 }
             });
         } else if (itemViewType == TYPE_LEVEL_1) {
-            MyTreeBean.ChildrenBean childrenBean = (MyTreeBean.ChildrenBean) item;
-            helper.setText(R.id.item_tree_lv1, "· " + childrenBean.getName());
+            helper.setText(R.id.item_tree_lv1, "· " + ((MyTreeBean.ChildrenBean) item).getName());
         }
     }
 }
