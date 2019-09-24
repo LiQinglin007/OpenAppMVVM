@@ -98,7 +98,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
             case R.id.mine_blog:
                 startActivity(new Intent(getActivity(), WebViewActivity.class)
                         .putExtra(FinalData.WEB_VIEW_URL, "https://blog.csdn.net/qq_15037349")
-                        .putExtra(FinalData.WEB_VIEW_TITLE, "个人博客567")
+                        .putExtra(FinalData.WEB_VIEW_TITLE, "个人博客123")
                 );
                 break;
             case R.id.mine_book:
